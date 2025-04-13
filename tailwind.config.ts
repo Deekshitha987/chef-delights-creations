@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,7 +62,19 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+				// Custom colors for our chef website
+				chef: {
+					terracotta: '#E07A5F',
+					sage: '#81B29A',
+					cream: '#F2F0EB',
+					brown: '#654321',
+					darkBrown: '#3D2B1F',
+				},
+			},
+			fontFamily: {
+				sans: ['Nunito Sans', 'sans-serif'],
+				serif: ['Playfair Display', 'serif'],
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
