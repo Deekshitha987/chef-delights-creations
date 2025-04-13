@@ -1,23 +1,90 @@
 
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { LogIn } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { Checkbox } from "@/components/ui/checkbox";
+import { useToast } from "@/hooks/use-toast";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  // Check if there are stored credentials on component mount
+  useEffect(() => {
+    const storedEmail = localStorage.getItem("rememberedEmail");
+    const storedPassword = localStorage.getItem("rememberedPassword");
+    if (storedEmail && storedPassword) {
+      setEmail(storedEmail);
+      setPassword(storedPassword);
+      setRememberMe(true);
+    }
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // This would be replaced with actual authentication logic once connected to Supabase
-    console.log("Login attempt with:", { email, password });
-    // For now, just show an alert as a placeholder
-    alert("Login functionality will be implemented once connected to a database.");
+    
+    // Get users from localStorage or create empty array if none exist
+    const users = JSON.parse(localStorage.getItem("users") || "[]");
+    
+    // Check if user exists with matching email and password
+    const user = users.find((u: { email: string; password: string }) => 
+      u.email === email && u.password === password
+    );
+    
+    if (user) {
+      // Save authentication state
+      localStorage.setItem("isLoggedIn", "true");
+      localStorage.setItem("currentUser", JSON.stringify(user));
+      
+      // Save credentials if remember me is checked
+      if (rememberMe) {
+        localStorage.setItem("rememberedEmail", email);
+        localStorage.setItem("rememberedPassword", password);
+      } else {
+        localStorage.removeItem("rememberedEmail");
+        localStorage.removeItem("rememberedPassword");
+      }
+      
+      // Show success toast
+      toast({
+        title: "Login successful",
+        description: "Welcome back to Chef's Delights!",
+      });
+      
+      // Redirect to home page
+      navigate("/");
+    } else {
+      // Show error toast
+      toast({
+        title: "Login failed",
+        description: "Invalid email or password. Please try again.",
+        variant: "destructive",
+      });
+      
+      // If no users exist, create a default user
+      if (users.length === 0) {
+        const newUsers = [
+          { 
+            email: "chef@example.com", 
+            password: "password123", 
+            name: "Chef Demo"
+          }
+        ];
+        localStorage.setItem("users", JSON.stringify(newUsers));
+        toast({
+          title: "Demo account created",
+          description: "Try logging in with chef@example.com / password123",
+        });
+      }
+    }
   };
 
   return (
@@ -72,10 +139,10 @@ const Login = () => {
 
             <div className="flex items-center justify-between">
               <div className="flex items-center">
-                <input
+                <Checkbox
                   id="remember-me"
-                  name="remember-me"
-                  type="checkbox"
+                  checked={rememberMe}
+                  onCheckedChange={(checked) => setRememberMe(checked === true)}
                   className="h-4 w-4 text-chef-terracotta focus:ring-chef-terracotta border-gray-300 rounded"
                 />
                 <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
