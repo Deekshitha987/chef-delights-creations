@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, X, Search } from "lucide-react";
+import { Menu, X, Search, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Navbar = () => {
@@ -43,6 +43,12 @@ const Navbar = () => {
                 className="pl-10 pr-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-chef-terracotta focus:border-transparent"
               />
             </div>
+            <Link to="/login">
+              <Button variant="outline" className="flex items-center gap-2 border-chef-terracotta text-chef-terracotta hover:bg-chef-terracotta/10">
+                <LogIn size={18} />
+                Login
+              </Button>
+            </Link>
           </div>
           
           {/* Mobile Menu Button */}
@@ -91,16 +97,14 @@ const Navbar = () => {
             >
               Contact
             </Link>
-            <div className="px-3 py-2">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
-                <input
-                  type="text"
-                  placeholder="Search recipes..."
-                  className="w-full pl-10 pr-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-chef-terracotta focus:border-transparent"
-                />
-              </div>
-            </div>
+            <Link 
+              to="/login" 
+              className="flex items-center gap-2 px-3 py-2 rounded-md text-base font-medium hover:bg-chef-cream hover:text-chef-terracotta"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <LogIn size={18} />
+              Login
+            </Link>
           </div>
         </div>
       )}
